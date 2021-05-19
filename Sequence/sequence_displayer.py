@@ -13,20 +13,6 @@ from tkinter import font
 import copy
 import time
 
-# CONSTANTS ----------------------------------------------------------------------------------------------------------#
-
-#Absolute positions for resources (hands, discards, chips).
-HAND_POS = [(124,930), (124,112), (1612,112), (1612,930)]
-DISC_POS = [(216,656), (216,425), (1706,425), (1706,656)]
-TITL_POS = [( 48,792), ( 48,257), (1537,257), (1537,792)]
-CHIP_POS = [536, 118]
-DRFT_POS = [639, 1080]
-CHIP_SEP = 94   #Separation between board chips.
-CARD_SEP = 37   #Separation between cards.
-DRFT_SEP = 160  #Separation between drafted cards.
-C_WIDTH  = 1920 #Canvas dimensions.
-C_HEIGHT = 1080
-
 # CLASS DEF ----------------------------------------------------------------------------------------------------------#
 
 def make_label(master, x, y, h, w, *args, **kwargs):
@@ -46,12 +32,12 @@ class AgentArea():
         
         #Create agent title labels. Choose font size to best accommodate agent title length.
         text  = "Agent #{}: {}".format(agent_id, agent_title) if len(agent_title)<=20 else agent_title
-        fsize = 15 if len(agent_title)<=30 else 10
-        self.agent_title = make_label(root, text=text, x=titl_pos[0], y=titl_pos[1], h=35, w=337, font=('TkFixedFont', fsize), bg='black', fg='white')
+        fsize = int(15*s) if len(agent_title)<=30 else int(10*s)
+        self.agent_title = make_label(root, text=text, x=titl_pos[0], y=titl_pos[1], h=35*s, w=337*s, font=('TkFixedFont', fsize), bg='black', fg='white')
         
         #Each card is offset a certain number of pixels to the right to ensure they are identifiable.
         self.cards = [None]*6
-        self.card_pos = [(hand_pos[0]+i*CARD_SEP, hand_pos[1]+20) for i in range(6)]
+        self.card_pos = [(hand_pos[0]+i*CARD_SEP, hand_pos[1]+20*s) for i in range(6)]
             
     #Place images of cards in this agent's area.
     def update(self, agent, resources):
@@ -89,29 +75,45 @@ class BoardArea():
 
                 
 class GUIDisplayer(Displayer):
-    def __init__(self, delay = 0.1):
+    def __init__(self, scale, delay = 0.1):
         self.delay = delay
+        # Absolute positions for resources (hands, discards, chips).
+        global s,HAND_POS,DISC_POS,TITL_POS,CHIP_POS,DRFT_POS,CHIP_SEP,CARD_SEP,DRFT_SEP,C_WIDTH,C_HEIGHT
+        s = scale
+        HAND_POS = [(124*s,930*s), (124*s,112*s), (1612*s,112*s), (1612*s,930*s)]
+        DISC_POS = [(216*s,656*s), (216*s,425*s), (1706*s,425*s), (1706*s,656*s)]
+        TITL_POS = [( 48*s,792*s), ( 48*s,257*s), (1537*s,257*s), (1537*s,792*s)]
+        CHIP_POS = [536*s,118*s]
+        DRFT_POS = [639*s,1080*s]
+        CHIP_SEP =   94*s #Separation between board chips.
+        CARD_SEP =   37*s #Separation between cards.
+        DRFT_SEP =  160*s #Separation between drafted cards.
+        C_WIDTH  = 1920*s #Canvas dimensions.
+        C_HEIGHT = 1080*s
                 
     def InitDisplayer(self, runner):
         #Initialise root frame.
         self.root = tkinter.Tk()
         self.root.title("Sequence! ------ COMP90054 AI Planning for Autonomy")
         self.root.tk.call('wm', 'iconphoto', self.root._w, tkinter.PhotoImage(file='Sequence/resources/icon_main.png'))
-        self.root.geometry("{}x{}".format(C_WIDTH, C_HEIGHT))
+        self.root.geometry("{}x{}".format(int(C_WIDTH), int(C_HEIGHT)))
         self.maximised = True
-        self.root.attributes("-fullscreen", self.maximised)
+        if s==1: #Fullscreen mode only if running full resolution.
+            self.root.attributes("-fullscreen", self.maximised)
         self.root.bind("<F11>", self.toggle_fullscreen)
         self.root.bind("<Escape>", self.end_fullscreen)
         
         #Load resources (i.e. images of tabletop, cards, and player chips).
-        self.resources = {'table':tkinter.PhotoImage(file="Sequence/resources/background.png")}
+        self.resources = {'table':tkinter.PhotoImage(file="Sequence/resources/background.png").subsample(int(1/s))}
         for rank in ['2','3','4','5','6','7','8','9','t','j','q','k','a']:
             for suit in ['d','c','h','s']:
                 card = rank+suit
                 self.resources[card] = tkinter.PhotoImage(file="Sequence/resources/cards/{}.png".format(card))
+                self.resources[card]  = self.resources[card].subsample(int(1/s))
         for chip in [RED, BLU, RED_SEQ, BLU_SEQ]:
             self.resources[chip] = tkinter.PhotoImage(file="Sequence/resources/chips/{}.png".format(chip))
-            
+            self.resources[chip] = self.resources[chip].subsample(int(1/s))
+        
         #Initialise canvas and place background table image.
         self.canvas = tkinter.Canvas(self.root, height=C_HEIGHT, width=C_WIDTH, bg='black')
         self.canvas.pack()

@@ -15,7 +15,7 @@ There are three give general agents that will work with any game under directory
 ## Usage
 The game can be run with specified runner. The only difference between runner is the first two line of the code (importing different game files.) The options can be found with following command:
 ```
-python sequence_runner.py -h
+python .\azul_runner.py -h
 ```
 
 If running Sequence, note that the game will start in fullscreen mode. Press F11 to toggle fullscreen. The game's activity log now appears as a separate window.
@@ -28,11 +28,13 @@ If running Sequence, note that the game will start in fullscreen mode. Press F11
 
 
 ## Current Games:
+- Azul
+- Reversi (No GUI)
 - Sequence
 
 
 ## Limitation
-For teams to import their customized python file, they will have to add their team name into the path. For example:
+In order for students to import their customized python file, they will have to add their team name into the path. For example:
 ```
 import agents.staff_team_random.timeout
 ```

@@ -83,9 +83,7 @@ class HidePrint:
 
 
 def run(options,valid_game,msg):
-
-    # text displayer, will disable GUI
-    displayer = GUIDisplayer(options.delay)
+    displayer = GUIDisplayer(options.scale, options.delay)
     if options.textgraphics:
         displayer = TextDisplayer()
     elif options.quiet or options.superQuiet:
@@ -255,6 +253,7 @@ def loadParameter():
     parser.add_option('--delay', type='float', help='Delay action in a play or replay by input (float) seconds (default 0.1)', default=0.1)
     parser.add_option('-p','--print', action='store_true', help='Print all the output in terminal when playing games, will diable \'-l\' automatically. (default: False)', default=False)
     parser.add_option('--num_of_agent', type='int',help='num_of_agent', default=4)
+    parser.add_option('--scale', type='float',help='window scaling (0.5 or 1)', default=1)
 
 
     options, otherjunk = parser.parse_args(sys.argv[1:] )
