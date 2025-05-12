@@ -1,0 +1,61 @@
+utils.py: 
+the function raiseNotDefined() is particularly useful in development or educational contexts where incomplete code is expected, as it provides clear feedback about what needs to be implemented and where.
+
+template.py: 
+defines a framework for a turn-based game (any) This structure provides a flexible foundation for building a variety of turn-based games, with clear separation of concerns between game state, rules, agents, and display.
+
+Classes
+- GameState
+- Action
+- GameRule
+- Agent
+- Displayer
+
+sequence_runner.py:
+- loadAgent(): This function is useful in scenarios where agents are implemented as separate modules and need to be loaded dynamically at runtime. function is responsible for dynamically loading agent modules from a list of file paths and associating them with corresponding team name.
+- HidePrint class is designed to control and redirect the output streams (stdout and stderr) in Python. It is particularly useful in scenarios where you want to suppress or log the output of a block of code, such as during debugging or when running code that produces excessive or unnecessary console output.
+- run(): function executes a sequence of games, handling agent loading, game initialization, replaying recorded games, and collecting results. 
+-loadParamter(): processes command-line arguments for running a game simulation. This setup allows users to configure various aspects of the game
+Parameters:
+    -r/--red: Specifies the file for the red team's agent (default: samples.random).
+    -b/--blue: Specifies the file for the blue team's agent (default: samples.random).
+    --redName and --blueName: Set custom names for the red and blue teams.
+    -t/--textgraphics: Enables text-only output.
+    -q/--quiet: Suppresses graphical and text output, showing only game info.
+    -Q/--superQuiet: Disables all output.
+    -w/--warningTimeLimit: Sets the time limit for a warning during a move (default: 1 second).
+    --startRoundWarningTimeLimit: Sets the time limit for initialization warnings (default: 5 seconds).
+    -n/--numOfWarnings: Specifies the number of warnings a team can receive before failing (default: 3).
+    -m/--multipleGames: Runs multiple games in sequence (default: 1).
+    --setRandomSeed: Sets a random seed for reproducibility (default: 90054).
+    --replay: Replays a recorded game from a specified file.
+    -s/--saveGameRecord: Saves game histories to a file.
+    -o/--output: Specifies the output directory for logs and replays (default: output).
+    -l/--saveLog: Logs agent output to a file.
+    -p/--print: Prints all output to the terminal, overriding logging.
+    --delay: Sets a delay (in seconds) between actions during play or replay (default: 0.1).
+    --num_of_agent: Specifies the number of agents (default: 4).
+    --scale: Sets the scaling factor for the display window (default: 1).
+
+game.py:
+- Game class is a central component of the game framework, responsible for managing the game flow, enforcing rules, handling agent actions, and maintaining game history. It integrates various elements such as agents, game rules, and display functionality to simulate a turn-based game.
+- GameReplayer Class is designed to replay a previously recorded game using a replay file. It reconstructs the game state, actions, and outcomes based on the data stored in the replay, allowing for analysis, debugging, or visualization of past games. This class integrates with the game rules and an optional displayer to simulate the replay.
+
+agents\samples
+Agents are expected to make decisions based on the current game state and a set of available actions. 
+
+agents\samples\timeout.py:
+This agent is designed to test how the game framework handles agents that exceed the allowed time limit for making decisions. If the framework enforces timeouts, this agent may trigger warnings or penalties.
+The agent always selects the first action from the list, regardless of the game state. It is a test agent rather than a fully functional game-playing agent.
+
+agents\samples\random.py:
+agent that selects actions randomly. While it lacks strategic decision-making, it serves as a useful baseline for testing the game framework or comparing the performance of more advanced agents.
+
+agents\samples\first_move.py:
+simple, deterministic agent that always selects the first available action. While it lacks strategic depth and does not utilize the game state
+
+Sequence\
+- resources contain all the different assets for the game.
+- sequence_utils.py: code defines constants, a utility class, and several functions to facilitate the representation and debugging of a game state, agent actions, and the game board. These utilities are essential for improving the readability of game-related data and providing meaningful descriptions of game events.
+- sequence_model.py: defines the core logic for the game "Sequence," including the game state, rules, and mechanics. It introduces several classes and functions to manage the deck, board, agents, and gameplay.
+- sequence_displayer.py: code defines a graphical and textual display system for the game "Sequence," enabling visualization of the game state, player actions, and game progress. It includes two main classes: GUIDisplayer for graphical visualization using tkinter and TextDisplayer for text-based output. Additionally, helper classes like AgentArea and BoardArea manage specific parts of the graphical interface.

@@ -83,7 +83,9 @@ class HidePrint:
 
 
 def run(options,valid_game,msg):
-    displayer = GUIDisplayer(options.scale, options.delay)
+
+    # text displayer, will disable GUI
+    displayer = GUIDisplayer(options.delay)
     if options.textgraphics:
         displayer = TextDisplayer()
     elif options.quiet or options.superQuiet:
@@ -101,7 +103,7 @@ def run(options,valid_game,msg):
     
     # make sure random seed is traceable
     random.seed(random_seed)
-    seed_list = [random.randint(0,1e10) for _ in range(1000)]
+    seed_list = [random.randint(0,int(1e10)) for _ in range(1000)] # change 1: converted to int
     seed_idx = 0
 
     num_of_warning = options.numOfWarnings
@@ -118,7 +120,7 @@ def run(options,valid_game,msg):
         results = {"succ":valid_game}
         for i in range(options.multipleGames):
             #Load each agent twice, for two teams of two.
-            agents,load_errs = loadAgent([options.red, options.blue, options.red, options.blue], 
+            agents,load_errs = loadAgent([options.red, options.blue, options.red, options.blue],
                                           agents_names, superQuiet=options.superQuiet)
             is_load_err = False
             for i,err in load_errs.items():
@@ -253,8 +255,6 @@ def loadParameter():
     parser.add_option('--delay', type='float', help='Delay action in a play or replay by input (float) seconds (default 0.1)', default=0.1)
     parser.add_option('-p','--print', action='store_true', help='Print all the output in terminal when playing games, will diable \'-l\' automatically. (default: False)', default=False)
     parser.add_option('--num_of_agent', type='int',help='num_of_agent', default=4)
-    parser.add_option('--scale', type='float',help='window scaling (0.5 or 1)', default=1)
-
 
     options, otherjunk = parser.parse_args(sys.argv[1:] )
     assert len(otherjunk) == 0, "Unrecognized options: " + str(otherjunk)

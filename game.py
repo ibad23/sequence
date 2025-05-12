@@ -28,7 +28,7 @@ class Game:
         
         self.seed = seed
         random.seed(self.seed)
-        self.seed_list = [random.randint(0,1e10) for _ in range(1000)]
+        self.seed_list = [random.randint(0,int(1e10)) for _ in range(1000)] # change 2: converted to int
         self.seed_idx = 0
 
         # Make sure we are forming a valid game, and that agent
@@ -91,6 +91,10 @@ class Game:
                         for attr in self.game_rule.private_information:
                             delattr(gs_copy.agents[i], attr)
             
+            # for debugging purpose
+            # selected = agent.SelectAction(actions_copy, gs_copy)
+            #######################
+
             # Allow agent to select action within time limit. Any error will result in one warning.
             try:
                 selected = func_timeout(self.time_limit,agent.SelectAction,args=(actions_copy, gs_copy))
@@ -152,13 +156,21 @@ class Game:
             random.seed(self.seed_list[self.seed_idx])
             self.seed_idx += 1
 
+            # add for training deep q agent 
+            # agent.update_model(self.game_rule.current_game_state)
+            ##############################################
+            # if you wanna start from fresh
+            # please also comment out the load() function in Net class when init
+            
             if self.displayer is not None:
                 self.displayer.ExcuteAction(agent_index,selected, self.game_rule.current_game_state)
 
             if self.warnings[agent_index] == self.warning_limit:
                 history = self._EndGame(self.game_rule.num_of_agent,history,isTimeOut=True,id=agent_index)
                 return history
-                
+        
+        for agent in self.agents:
+            agent.save_net()
         # Score agent bonuses
         return self._EndGame(self.game_rule.num_of_agent,history,isTimeOut=False)
             
