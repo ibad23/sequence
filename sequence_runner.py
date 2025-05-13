@@ -29,10 +29,10 @@ error_index= ["red_team_load","blue_team_load"]
 def loadAgent(file_list,name_list,superQuiet = True):
     agents = [None]*4
     load_errs = {}
-    print(f"path is {file_list}")
+    # print(f"path is {file_list}")
     for i,agent_file_path in enumerate(file_list):
         agent_temp = None
-        print(f"path is {agent_file_path}")
+        # print(f"path is {agent_file_path}")
 
         try:
             mymodule = importlib.import_module(agent_file_path)
@@ -48,7 +48,8 @@ def loadAgent(file_list,name_list,superQuiet = True):
         if agent_temp != None:
             agents[i] = agent_temp
             if not superQuiet:
-                print ('Agent {} team {} agent {} loaded'.format(i,name_list[i],file_list[i]))
+                # print ('Agent {} team {} agent {} loaded'.format(i,name_list[i],file_list[i]))
+                pass
         else:
             agents[i] = DummyAgent(i)
             load_errs[error_index[i]] = '[Error] Agent {} team {} agent {} cannot be loaded'\
@@ -147,6 +148,7 @@ def run(options,valid_game,msg):
                         warning_limit=num_of_warning,
                         displayer=displayer,
                         agents_namelist=agents_names)
+            
             if not options.print:
                 with HidePrint(options.saveLog,file_path,f_name):
                     print("Following are the print info for loading:\n{}\n".format(msg))
@@ -169,6 +171,11 @@ def run(options,valid_game,msg):
                 _,_,r_total,b_total,r_win,b_win,tie = games_results[len(games_results)-1]
                 r_score = replay["scores"][0] + replay["scores"][2] # Two teams of two players, so scores are summed.
                 b_score = replay["scores"][1] + replay["scores"][3]
+
+                total_actions = list(replay["actions"][-1].keys())[0]
+                print("Total actions taken: {}".format(total_actions))
+                print("Total actions taken by each agent: {}".format(total_actions//4))
+
                 if r_score==b_score:
                     tie = tie + 1
                 elif r_score<b_score:
@@ -238,16 +245,21 @@ def loadParameter():
 
     parser.add_option('-r', '--red', help='Red team agent file (default: samples.random)', default='samples.random')
     parser.add_option('-b', '--blue', help='Blue team agent file (default: samples.random)', default='samples.random')
+
     parser.add_option('--redName', help='Red team name (default: Red RandomAgent)', default='Red RandomAgent')
     parser.add_option('--blueName', help='Blue team name (default: Blue RandomAgent)',default='Blue RandomAgent')
+
     parser.add_option('-t','--textgraphics', action='store_true', help='Display output as text only (default: False)', default=False)
     parser.add_option('-q','--quiet', action='store_true', help='No text nor graphics output, only show game info', default=False)
     parser.add_option('-Q', '--superQuiet', action='store_true', help='No output at all', default=False)
+
     parser.add_option('-w', '--warningTimeLimit', type='float',help='Time limit for a warning of one move in seconds (default: 1)', default=1.0)
     parser.add_option('--startRoundWarningTimeLimit', type='float',help='Time limit for a warning of initialization for each round in seconds (default: 5)', default=5.0)
     parser.add_option('-n', '--numOfWarnings', type='int',help='Num of warnings a team can get before fail (default: 3)', default=3)
+
     parser.add_option('-m', '--multipleGames', type='int',help='Run multiple games in a roll', default=1)
     parser.add_option('--setRandomSeed', type='int',help='Set the random seed, otherwise it will be completely random (default: 90054)', default=90054)
+
     parser.add_option('-s','--saveGameRecord', action='store_true', help='Writes game histories to a file (named by teams\' names and the time they were played) (default: False)', default=False)
     parser.add_option('-o','--output', help='output directory for replay and log (default: output)',default='output')
     parser.add_option('-l','--saveLog', action='store_true',help='Writes agent printed information into a log file(named by the time they were played)', default=False)
@@ -255,7 +267,6 @@ def loadParameter():
     parser.add_option('--delay', type='float', help='Delay action in a play or replay by input (float) seconds (default 0.1)', default=0.1)
     parser.add_option('-p','--print', action='store_true', help='Print all the output in terminal when playing games, will diable \'-l\' automatically. (default: False)', default=False)
     parser.add_option('--num_of_agent', type='int',help='num_of_agent', default=4)
-
     options, otherjunk = parser.parse_args(sys.argv[1:] )
     assert len(otherjunk) == 0, "Unrecognized options: " + str(otherjunk)
 
@@ -281,6 +292,7 @@ if __name__ == '__main__':
     """
     msg = ""
     options = loadParameter()
-    run(options,True,msg)
-
+    results = run(options,True,msg)
+    # print(results)
+    
 # END FILE -----------------------------------------------------------------------------------------------------------#

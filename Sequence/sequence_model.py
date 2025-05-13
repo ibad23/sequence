@@ -241,7 +241,6 @@ class SequenceGameRule(GameRule):
         self.current_agent_index = self.getNextAgentIndex() if action['type']!='trade' else self.current_agent_index
         self.action_counter += 1
 
-
     def gameEnds(self): #Game ends if a team has formed at least 2 sequences, or if the deck is empty.
         scores = {RED:0, BLU:0}
         for plr_state in self.current_game_state.agents:

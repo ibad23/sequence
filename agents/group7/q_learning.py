@@ -9,8 +9,8 @@ REMOVE = 'remove'
 EMPTY = '_'
 RED = 'r'
 BLU = 'b'
-ALPHA = 0.4
-GAMMA = 0.9
+ALPHA = 0.4 # learning rate
+GAMMA = 0.9 # discount factor
 
 HEART_COORDS = [(4,4),(4,5),(5,4),(5,5)]
 

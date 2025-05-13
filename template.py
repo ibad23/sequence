@@ -69,7 +69,6 @@ class Agent(object):
     def save_net(self):
         return
 
-
 class Displayer:
     def __init__(self):
         pass

@@ -152,6 +152,7 @@ class Game:
             self.seed_idx += 1
             history["actions"].append({action_counter:{"agent_id":self.game_rule.current_agent_index,"action":selected}})
             action_counter += 1
+                        
             self.game_rule.update(selected)
             random.seed(self.seed_list[self.seed_idx])
             self.seed_idx += 1
