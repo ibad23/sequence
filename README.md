@@ -1,1 +1,1 @@
-# CI Project: Work in Progress
+# CI Project: Public template
